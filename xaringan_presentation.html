@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+  <head>
+    <title>Modelo AdaBoost</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="⚔   Mateus Maia   em conjunto com Anderson Ara" />
+    <meta name="date" content="2019-06-27" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Modelo AdaBoost
+## A sabedoria ponderada das multidões
+### ⚔ <br/> Mateus Maia <br/> em conjunto com Anderson Ara
+### 2019-06-27
+
+---
+
+
+#Aprendizado Estatístico Supervisionado
+&lt;br/&gt;
+#.large[$$g:\mathcal{X}\rightarrow\mathcal{Y}$$]
+
+&lt;br/&gt;
+#.large[$$\hat{g}(\mathbf{X})=\mathbf{Y}$$]
+---
+
+# Aprendizado Estatístico Supervisionado
+.center[!["Os retângulos vermelhos indicam items faltantes"](grocery_store_new.png)]
+
+---
+# Aprendizado Estatístico Supervisionado
+.center[!["Uma demonstraçãoo da força G de Alex induziu o detector de perda de consciência."](pilot_flier.png)]
+
+---
+class: inverse, center, middle
+
+# Modelos de Ensemble
+
+---
+
+# Modelos de Ensemble
+
+&lt;br/&gt;
+&lt;br/&gt;
+
+.center[![](meme_emsemble.jpg)]
+
+
+---
+# Modelos de Ensemble
+
+&lt;br/&gt;
+&lt;br/&gt;
+
+.center[![](sequential_paralallel.png)]
+
+---
+
+# Modelos de Boosting
+
+-**Boosting Adaptativo**
+&lt;br/&gt;
+&lt;br/&gt;
+--
+-Boosting Gradiente
+&lt;br/&gt;
+&lt;br/&gt;
+--
+-Boosting Gradiente Estocástico
+&lt;br/&gt;
+&lt;br/&gt;
+--
+-eXtreme Gradient Boosting
+&lt;br/&gt;
+&lt;br/&gt;
+--
+-LightBoosting
+
+---
+
+class: inverse, center, middle
+
+# Boosting Adaptativo
+## (AdaBoosting)
+
+---
+
+# AdaBoosting
+
+Dado `$$\mathbf{y}\in\{1,1\}$$`
+&lt;br/&gt;
+&lt;br/&gt;
+
+`$$G(\mathbf{x})=sign \left(\sum_{m=1}^{M} \alpha_{m}g_{m}(\mathbf{x}) \right)$$`
+
+--
+&lt;br/&gt;
+&lt;br/&gt;
+##.center[A sabedoria ponderada das multidões]
+
+
+---
+
+# AdaBoosting
+
+&lt;br/&gt;
+&lt;br/&gt;
+
+.center[![](medium_size.png)]
+
+
+
+---
+background-image: url(D:/my_computer/Est_ML_2019/presentation_meet_data_bahia/macaco_fazendo_conta.gif)
+background-size: cover
+class: center, middle, inverse
+
+# Hora das contas...
+
+---
+
+#AdaBoosting
+
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+#AdaBoosting
+
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.125 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# AdaBoost
+
+
+```r
+library(rpart)
+library(rpart.plot)
+g1&lt;-rpart(Heart_Disease~Chest_Pain+Blocked_Arteries+Patient_Weight,
+             data=medical_care,
+             control = rpart.control(maxdepth=1,minsplit = 2))
+               
+rpart.plot(g1)
+```
+
+&lt;img src="xaringan_presentation_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+--
+`$$\alpha_{1}=\frac{1}{2}log\left(\frac{1-\epsilon_{1}}{\epsilon_{1}} \right)$$`
+--
+`$$\alpha_{1}=\frac{1}{2}log\left(\frac{1-\epsilon_{1}}{\epsilon_{1}} \right)=\frac{1}{2}log\left(\frac{1-0.125}{0.125} \right)=0.973$$`
+---
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; New_Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+--
+
+`$$New\;weights_{correct}=weights_{correct}\times e^{-\alpha_{1}}$$`
+--
+`$$New\;weights_{correct}=0.125\times e^{-0.973}=0.047$$`
+---
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; New_Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+`$$New\;weights_{correct}=weights_{correct}\times e^{-\alpha_{1}}$$`
+
+`$$New\;weights_{correct}=0.125\times e^{-0.973}=0.047$$`
+---
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; New_Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+--
+`$$New\;weights_{wrong}=weights_{wrong}\times e^{\alpha_{1}}$$`
+--
+`$$New\;weights_{wrong}=0.125\times e^{0.973}=0.331$$`
+---
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; New_Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.331 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+`$$New\;weights_{wrong}=weights_{wrong}\times e^{\alpha_{1}}$$`
+
+`$$New\;weights_{wrong}=0.125\times e^{0.973}=0.331$$`
+
+---
+#AdaBoosting
+
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; New_Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.331 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.047 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Norm_Weights &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 205 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 210 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.502 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 156 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.071 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+#AdaBoosting
+
+
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;font-weight: bold;color: white !important;background-color: #3454D1 !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+---
+
+
+# AdaBoosting
+
+
+```r
+g2&lt;-rpart(Heart_Disease~Chest_Pain+Blocked_Arteries+Patient_Weight,
+             data=reweighted_data,
+             control = rpart.control(maxdepth=1,minsplit = 2))
+               
+rpart.plot(g2)
+```
+
+&lt;img src="xaringan_presentation_files/figure-html/unnamed-chunk-13-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+#AdaBoosting
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; Chest_Pain &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Blocked_Arteries &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Patient_Weight &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Heart_Disease &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; g2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 172 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 168 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;No&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 167 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 125 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: red !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; Yes &lt;/td&gt;
+   &lt;td style="text-align:center;font-weight: bold;color: #243B4A !important;"&gt; &lt;span style="     color: green !important;"&gt;Yes&lt;/span&gt; &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+--
+`$$\alpha_{2}=\frac{1}{2}log\left(\frac{1-\epsilon_{2}}{\epsilon_{2}} \right)$$`
+--
+`$$\alpha_{2}=\frac{1}{2}log\left(\frac{1-\epsilon_{1}}{\epsilon_{1}} \right)=\frac{1}{2}log\left(\frac{1-0.25}{0.25} \right)=0.549$$`
+
+---
+
+#AdaBoosting
+
+&lt;br/&gt;
+&lt;br/&gt;
+`$$G(\mathbf{x})=sign \left(\sum_{m=1}^{M} \alpha_{m}g_{m}(\mathbf{x}) \right)$$`
+--
+&lt;br/&gt;
+&lt;br/&gt;
+`$$G(\mathbf{x_{i}})=sign \left(\alpha_{1}g_{1}(\mathbf{x}_{i})+\alpha_{2}g_{2}(\mathbf{x}_{i})+\dots+ \alpha_{M}g_{M}(\mathbf{x_{i}}) \right)$$`
+--
+&lt;br/&gt;
+&lt;br/&gt;
+`$$G(\mathbf{x_{i}})=sign \left(1\times(\alpha_{1,Sim}+\dots+\alpha_{k,Sim})+(-1)\times \right(\alpha_{2,Não}+\dots+\alpha_{p,Não}))$$`
+
+---
+
+class: inverse, center, middle
+
+# Dados Simulados
+
+
+---
+# Dados Simulados
+.center[![](circles_png_square.png)]
+
+---
+# Dados Simulados
+.center[![](ada_gif_presentation4.gif)]
+
+---
+# Dados Simulados
+.center[![](error_gif_presentation3.gif)]
+
+---
+background-image: url(D:/my_computer/Est_ML_2019/presentation_meet_data_bahia/frog_write.gif)
+background-size: cover
+class: center, bottom, inverse
+
+# Mineração de Texto
+## (e AdaBoosting)
+
+
+---
+
+# Text Mining e algumas aplicações
+
+- __Classificação de Textos__
+
+--
+
+- Clusterização de Textos
+
+--
+
+- Análise de Sentimentos
+
+--
+
+- *Concept Extraction*
+--
+
+- Summarização de Documentos
+
+---
+##Classificação de Textos
+
+.pull.left[![](buss3.png)]
+.pull.right[![](sports3.png)]
+---
+
+# Bag of Words
+
+&lt;table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:center;"&gt; X1 &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; timewarn &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; profit &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; warner &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; quarter &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; fourth &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b001.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.3804104 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.3130291 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.1902052 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.1511458 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.1283632 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b002.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b003.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b004.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0283345 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0273626 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b005.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b006.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.1400322 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b007.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b008.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b009.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:center;"&gt; b010.txt &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.0000000 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+class: center, middle, inverse
+
+# Pré-processamento de texto
+
+---
+
+# Stemming
+&lt;br/&gt;
+&lt;br/&gt;
+.center[![](stemming_v2.png)]
+
+---
+
+# Stop Words
+.center[![](stopwords_cloud.jpg)]
+
+---
+
+# Ponderação dos Termos
+
+Para um __termo i__ no __documento j__
+
+.center[![](tfidf.png)]
+
+---
+
+class: inverse, center, middle
+
+# Modelagem
+## AdaBoosting
+
+---
+# Base de dados e parâmetros do modelo
+
+-400 observações com 5231 covariáveis
+
+--
+
+-200 notícias de __Esportes__ e 200 notícias de __Negócios__
+
+
+--
+
+-10-Folds com 10 repetições
+
+
+--
+
+---
+
+class: center, middle, inverse
+
+# Quantos Stumps (tocos) utilizar?
+
+---
+
+#Tuning
+&lt;br/&gt;
+&lt;br/&gt;
+.center[![](big_tuning.png)]
+---
+
+
+---
+
+class: center, middle,inverse
+
+# Obrigado!
+
+mateusmaia11@gmail.com
+
+&lt;br/&gt;
+&lt;br/&gt;
+Quem quiser explorar um pouco mais o AdaBoosting
+
+mateusmaia.shinyapps.io/adaboosting/
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
