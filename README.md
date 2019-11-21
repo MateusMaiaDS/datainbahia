@@ -2,7 +2,7 @@
 Presentation at the V Data in Bahia - AdaBoosting: the weighted wisdom of the crowd
 
 ---
-permalink: /index.html
+https://mateusmaiads.github.io/datainbahia/#1
 ---
 
 
